@@ -1,9 +1,34 @@
 version: '3.8'
 
 services:
-  flex.backend:
-    container_name: flex.backend
-    image: backend
+  frontend:
+    container_name: frontend
+    image: frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - landingPage
+      - flexbackend
+      
+  landingPage:
+    container_name: landingPage
+    image: landingpage
+    build:
+      context: landingPage
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5173:5173"
+    depends_on:
+      - flexbackend
+    
+  flexbackend:
+    container_name: flexbackend
+    image: flexbackend
     build:
       context: backend
       dockerfile: Dockerfile
@@ -11,7 +36,7 @@ services:
     ports:
       - "4500:4500"
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@db2:5432/postgres     
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/postgres     
   db:
     container_name: db
     image: postgres:12
